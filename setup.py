@@ -1,12 +1,16 @@
-USER_OAUTH_TOKEN = "enter user oauth token for slack app here, should start with xoxp-..."
+import os
+
+USER_OAUTH_TOKEN = os.environ.get("USER_OAUTH_TOKEN")
 REQUEST_URL = "https://slack.com/api/users.profile.set"
-DISCORD_ID = "enter discord id here"
-REFRESH_INTERVAL = 5 # in seconds
+DISCORD_ID = os.environ.get("DISCORD_ID")
+REFRESH_INTERVAL = int(os.environ.get("REFRESH_INTERVAL")) # in seconds
 
 emojis = {
-    "music": ":emoji_one:",
-    "code": ":emoji_two:",
-    "default": ":default_emoji:"
+    "music": ":musical_note:",
+    "code": ":vscode:",
+    "pycharm": ":pycharm:",
+    "osu": ":osu:",
+    "default": ""
 }
 
-default_status_message = "default status message"
+default_status_message = ""
