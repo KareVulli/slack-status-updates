@@ -47,7 +47,7 @@ while True:
     if new_text != old_text or new_emoji != old_emoji: 
         data = {
             'profile': {
-                "status_text": new_text,
+                "status_text": (new_text[:97] + '...') if len(new_text) > 100 else new_text,
                 "status_emoji": new_emoji,
                 "status_expiration": 0 # never expire
             }   
