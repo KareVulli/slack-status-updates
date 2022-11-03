@@ -15,14 +15,27 @@ def get_status(discord_presence_data):
     else:
         for activity in discord_presence_data['data']['activities']:
             if activity["name"] == "Visual Studio Code":
-                return ["code", activity["details"] + " in " + activity["state"]]
+                if activity.get("state") is not None and activity.get("details") is not None:
+                    return ["code", activity["details"] + " in " + activity["state"]]
+                elif activity.get("details") is not None:
+                    return ["code", activity["details"]]
+            
             elif activity["name"] == "PyCharm Professional":
                 return ["pycharm", activity["details"]]
+            
             elif activity["name"] == "osu!":
                 if activity.get("state") is not None and activity.get("details") is not None:
                     return ["osu", activity["state"] + " - " + activity["details"]]
                 elif activity.get("state") is not None:
-                        return ["osu", activity["name"] + " - " + activity["state"]]
+                    return ["osu", activity["name"] + " - " + activity["state"]]
+            
+            elif activity["name"] == "Beat Saber":
+                if activity.get("state") is not None and activity.get("details") is not None:
+                    return ["beat_saber", activity["name"] + ": " + activity["details"] + " [" + activity["state"]  + "]"]
+                elif activity.get("details") is not None:
+                    return ["beat_saber", activity["name"] + " - " + activity["details"]]
+                
+                
         return ["default", setup.default_status_message]
     
 old_text = None

@@ -10,6 +10,7 @@ emojis = {
     "code": ":vscode:",
     "pycharm": ":pycharm:",
     "osu": ":osu:",
+    "beat_saber": ":crossed_swords:",
     "default": ""
 }
 
