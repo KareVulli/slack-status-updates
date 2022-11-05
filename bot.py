@@ -13,7 +13,8 @@ def get_status(discord_presence_data):
     if discord_presence_data['data']['listening_to_spotify']:
         return ["music", "Listening to " + discord_presence_data['data']['spotify']['song'] + " by " + discord_presence_data['data']['spotify']['artist']]
     else:
-        for activity in discord_presence_data['data']['activities']:
+        activities = discord_presence_data['data']['activities']
+        for activity in activities:
             if activity["name"] == "Visual Studio Code":
                 if activity.get("state") is not None and activity.get("details") is not None:
                     return ["code", activity["details"] + " in " + activity["state"]]
@@ -34,8 +35,11 @@ def get_status(discord_presence_data):
                     return ["beat_saber", activity["name"] + ": " + activity["details"] + " [" + activity["state"]  + "]"]
                 elif activity.get("details") is not None:
                     return ["beat_saber", activity["name"] + " - " + activity["details"]]
-                
-                
+
+        if len(activities) > 0:
+            activity = activities[0]
+            return ["in_game", "Playing " + activity["name"]]
+
         return ["default", setup.default_status_message]
     
 old_text = None
