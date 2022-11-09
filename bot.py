@@ -20,9 +20,21 @@ def get_status(discord_presence_data):
                     return ["code", activity["details"] + " in " + activity["state"]]
                 elif activity.get("details") is not None:
                     return ["code", activity["details"]]
+                return ["code", "Idle"]
             
             elif activity["name"] == "PyCharm Professional":
-                return ["pycharm", activity["details"]]
+                if activity.get("state") is not None and activity.get("details") is not None:
+                    return ["pycharm", activity["state"] + " in " + activity["details"]]
+                elif activity.get("details") is not None:
+                    return ["pycharm", activity["details"]]
+                return ["pycharm", "Idle"]
+            
+            elif activity["name"] == "Android Studio":
+                if activity.get("state") is not None and activity.get("details") is not None:
+                    return ["android_studio", activity["state"] + " in " + activity["details"]]
+                elif activity.get("details") is not None:
+                    return ["android_studio", activity["details"]]
+                return ["android_studio", "Idle"]
             
             elif activity["name"] == "osu!":
                 if activity.get("state") is not None and activity.get("details") is not None:

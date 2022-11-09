@@ -9,6 +9,7 @@ emojis = {
     "music": ":musical_note:",
     "code": ":vscode:",
     "pycharm": ":pycharm:",
+    "android_studio": ":android_studio:",
     "osu": ":osu:",
     "beat_saber": ":crossed_swords:",
     "in_game": ":video_game:",
