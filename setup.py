@@ -13,6 +13,7 @@ emojis = {
     "osu": ":osu:",
     "beat_saber": ":crossed_swords:",
     "in_game": ":video_game:",
+    "vs": ":vs2022:",
     "default": ""
 }
 

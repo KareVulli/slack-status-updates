@@ -20,21 +20,21 @@ def get_status(discord_presence_data):
                     return ["code", activity["details"] + " in " + activity["state"]]
                 elif activity.get("details") is not None:
                     return ["code", activity["details"]]
-                return ["code", "Idle"]
+                return ["code", "Visual Studio Code - Idle"]
             
             elif activity["name"] == "PyCharm Professional":
                 if activity.get("state") is not None and activity.get("details") is not None:
                     return ["pycharm", activity["state"] + " in " + activity["details"]]
                 elif activity.get("details") is not None:
                     return ["pycharm", activity["details"]]
-                return ["pycharm", "Idle"]
+                return ["pycharm", "PyCharm Professional - Idle"]
             
             elif activity["name"] == "Android Studio":
                 if activity.get("state") is not None and activity.get("details") is not None:
                     return ["android_studio", activity["state"] + " in " + activity["details"]]
                 elif activity.get("details") is not None:
                     return ["android_studio", activity["details"]]
-                return ["android_studio", "Idle"]
+                return ["android_studio", "Android Studio - Idle"]
             
             elif activity["name"] == "osu!":
                 if activity.get("state") is not None and activity.get("details") is not None:
@@ -47,6 +47,16 @@ def get_status(discord_presence_data):
                     return ["beat_saber", activity["name"] + ": " + activity["details"] + " [" + activity["state"]  + "]"]
                 elif activity.get("details") is not None:
                     return ["beat_saber", activity["name"] + " - " + activity["details"]]
+                
+            elif activity["name"] == "Visual Studio":
+                if activity.get("state") is not None and activity.get("details") is not None:
+                    details = activity["details"]
+                    if details.startswith("File"):
+                        details = details.replace("File", "Editing", 1)
+                    elif details == "No active file":
+                        return ["vs", "Visual Studio 2022 - Idle"]
+                    return ["vs", details + " in " + activity["state"].replace("Solution ", "", 1)]
+                return ["vs", "Visual Studio 2022 - Idle"]
 
         if len(activities) > 0:
             activity = activities[0]
