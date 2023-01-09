@@ -80,20 +80,35 @@ def exit_handler():
 atexit.register(exit_handler)
 
 while True:
-    status = get_status(requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID).json())
-    new_text = status[1]
-    new_emoji = setup.emojis[status[0]]
-    if new_text != old_text or new_emoji != old_emoji: 
-        data = {
-            'profile': {
-                "status_text": (new_text[:97] + '...') if len(new_text) > 100 else new_text,
-                "status_emoji": new_emoji,
-                "status_expiration": 0 # never expire
-            }   
-        }
-        print(f"Sending status \"{new_emoji} {new_text}\" to Slack")
-        requests.post(setup.REQUEST_URL, headers=headers, data=json.dumps(data))
-        old_emoji = new_emoji
-        old_text = new_text
+    response = None
+    try:
+        response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID).json()
+    except requests.ConnectionError as e:
+        print(f"Connection error when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+    except requests.Timeout as e:
+        print(f"Connection timed out when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+
+    if response is not None:
+        status = get_status(response)
+        new_text = status[1]
+        new_emoji = setup.emojis[status[0]]
+        if new_text != old_text or new_emoji != old_emoji: 
+            data = {
+                'profile': {
+                    "status_text": (new_text[:97] + '...') if len(new_text) > 100 else new_text,
+                    "status_emoji": new_emoji,
+                    "status_expiration": 0 # never expire
+                }   
+            }
+            print(f"Sending status \"{new_emoji} {new_text}\" to Slack")
+            try:
+                requests.post(setup.REQUEST_URL, headers=headers, data=json.dumps(data))
+            except requests.ConnectionError as e:
+                print(f"Connection error when sending status to Slack.")
+            except requests.Timeout as e:
+                print(f"Connection timed out when sending status to Slack.")
+                    
+            old_emoji = new_emoji
+            old_text = new_text
 
     time.sleep(setup.REFRESH_INTERVAL)
