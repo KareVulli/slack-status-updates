@@ -13,3 +13,17 @@
    1) update ```emojis``` with valid slack emoji ids (e.x. `:smile:`) for all of the fields (`default`, `code`, `pycharm`, `osu`, `music` or it will not work. Right now it only supports these, but more may be added later.
    2) update ```default_status_message``` with what you want your status to be when there are no activities in your discord presence
     
+# Pycharm config
+```
+Application:
+   First line: Custom: "Idle"
+   Second line: Empty
+
+Project:
+   First line: Custom: "Editing ${ProjectName} [${VcsBranch}]"
+   Second line: Empty
+
+File:
+   First line: File Name
+   Second line: Custom: "${ProjectName} [${VcsBranch}]"
+```
