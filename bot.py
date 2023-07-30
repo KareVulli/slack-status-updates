@@ -80,16 +80,24 @@ def exit_handler():
 atexit.register(exit_handler)
 
 while True:
-    response = None
+    response_json = None
+    response_text = None
     try:
-        response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID).json()
+        response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID)
+        response_text = response.text
+        try:
+            response_json = response.json()
+        except requests.JSONDecodeError as e:
+            print(f"JSON Decode error, response was '{response_text}'")
+            raise
     except requests.ConnectionError as e:
         print(f"Connection error when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
     except requests.Timeout as e:
         print(f"Connection timed out when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+    
 
-    if response is not None:
-        status = get_status(response)
+    if response_json is not None:
+        status = get_status(response_json)
         new_text = status[1]
         new_emoji = setup.emojis[status[0]]
         if new_text != old_text or new_emoji != old_emoji: 
