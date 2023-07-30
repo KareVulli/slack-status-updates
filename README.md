@@ -10,7 +10,7 @@
    2) `DISCORD_ID` field with your discord id (don't confuse this with your username)
    3) OPTIONAL: `REFRESH_INTERVAL` to what you would like (in seconds)
 5) the only changes you will need to make in the code are to the [setup.py](setup.py) file:
-   1) update ```emojis``` with valid slack emoji ids (e.x. `:smile:`) for all of the fields (`default`, `code`, `pycharm`, `osu`, `music` or it will not work. Right now it only supports these, but more may be added later.
+   1) update ```emojis``` with valid slack emoji ids (e.x. `:smile:`) for all of the fields
    2) update ```default_status_message``` with what you want your status to be when there are no activities in your discord presence
     
 # Pycharm config
