@@ -84,6 +84,9 @@ while True:
     response_text = None
     try:
         response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID)
+        status = response.status_code
+        if status != 200:
+            print(f"Lanyard API Response Status was {status}")
         response_text = response.text
         try:
             response_json = response.json()
