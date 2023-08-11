@@ -81,18 +81,14 @@ atexit.register(exit_handler)
 
 while True:
     response_json = None
-    response_text = None
     try:
         response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID)
         status = response.status_code
-        if status != 200:
-            print(f"Lanyard API Response Status was {status}")
-        response_text = response.text
-        try:
+        if status == 200:
             response_json = response.json()
-        except requests.JSONDecodeError as e:
-            print(f"JSON Decode error, response was '{response_text}'")
-            raise
+        else:
+            print(f"Lanyard API Response Status was {status}. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+
     except requests.ConnectionError as e:
         print(f"Connection error when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
     except requests.Timeout as e:
