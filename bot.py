@@ -36,7 +36,7 @@ def get_status(discord_presence_data):
                     return ["android_studio", activity["details"]]
                 return ["android_studio", "Android Studio - Idle"]
             
-            elif activity["name"] == "osu!":
+            elif activity["name"] == "osu!" or activity["name"] == "osu!(lazer)":
                 if activity.get("state") is not None and activity.get("details") is not None:
                     return ["osu", activity["state"] + " - " + activity["details"]]
                 elif activity.get("state") is not None:
