@@ -22,12 +22,12 @@ def get_status(discord_presence_data):
                     return ["code", activity["details"]]
                 return ["code", "Visual Studio Code - Idle"]
             
-            elif activity["name"] == "PyCharm Professional":
+            elif activity["name"] == "PyCharm Professional" or activity["name"] == "PyCharm Community":
                 if activity.get("state") is not None and activity.get("details", "").strip() != "":
                     return ["pycharm", activity["state"] + " in " + activity["details"]]
                 elif activity.get("state") is not None:
                     return ["pycharm", activity["state"]]
-                return ["pycharm", "PyCharm Professional - Idle"]
+                return ["pycharm", "PyCharm - Idle"]
             
             elif activity["name"] == "Android Studio":
                 if activity.get("state") is not None and activity.get("details") is not None:
