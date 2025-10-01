@@ -9,6 +9,12 @@ headers = {
     'Authorization': 'Bearer ' + setup.USER_OAUTH_TOKEN
 }
 
+def get_task_from_file() -> str:
+    if setup.TASK_FILE:
+        with open(setup.TASK_FILE, "r") as f:
+            return f.read()
+    return ""
+
 def get_status(discord_presence_data):
     if discord_presence_data['data']['listening_to_spotify']:
         return ["music", "Listening to " + discord_presence_data['data']['spotify']['song'] + " by " + discord_presence_data['data']['spotify']['artist']]
@@ -67,6 +73,29 @@ def get_status(discord_presence_data):
 old_text = None
 old_emoji = None
 
+def update_status(emoji_type: str, status: str):
+    global old_text, old_emoji
+    new_text = status
+    new_emoji = setup.emojis[emoji_type]
+    if new_text != old_text or new_emoji != old_emoji: 
+        data = {
+            'profile': {
+                "status_text": (new_text[:97] + '...') if len(new_text) > 100 else new_text,
+                "status_emoji": new_emoji,
+                "status_expiration": 0 # never expire
+            }   
+        }
+        print(f"Sending status \"{new_emoji} {new_text}\" to Slack")
+        try:
+            requests.post(setup.REQUEST_URL, headers=headers, data=json.dumps(data))
+        except requests.ConnectionError as e:
+            print(f"Connection error when sending status to Slack.")
+        except requests.Timeout as e:
+            print(f"Connection timed out when sending status to Slack.")
+                
+        old_emoji = new_emoji
+        old_text = new_text
+
 def exit_handler():
     print(f"Please wait while clearing custom status from Slack...")
     requests.post(setup.REQUEST_URL, headers=headers, data=json.dumps({
@@ -80,42 +109,27 @@ def exit_handler():
 atexit.register(exit_handler)
 
 while True:
-    response_json = None
-    try:
-        response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID)
-        status = response.status_code
-        if status == 200:
-            response_json = response.json()
-        else:
-            print(f"Lanyard API Response Status was {status}. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+    task = get_task_from_file()
+    if task != "":
+        update_status("task", f"Current task: {task}")
+    else:
+        response_json = None
+        try:
+            response = requests.get("https://api.lanyard.rest/v1/users/" + setup.DISCORD_ID)
+            status = response.status_code
+            if status == 200:
+                response_json = response.json()
+            else:
+                print(f"Lanyard API Response Status was {status}. Retrying in {setup.REFRESH_INTERVAL} seconds...")
 
-    except requests.ConnectionError as e:
-        print(f"Connection error when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
-    except requests.Timeout as e:
-        print(f"Connection timed out when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
-    
+        except requests.ConnectionError as e:
+            print(f"Connection error when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+        except requests.Timeout as e:
+            print(f"Connection timed out when getting Discord status. Retrying in {setup.REFRESH_INTERVAL} seconds...")
+        
 
-    if response_json is not None:
-        status = get_status(response_json)
-        new_text = status[1]
-        new_emoji = setup.emojis[status[0]]
-        if new_text != old_text or new_emoji != old_emoji: 
-            data = {
-                'profile': {
-                    "status_text": (new_text[:97] + '...') if len(new_text) > 100 else new_text,
-                    "status_emoji": new_emoji,
-                    "status_expiration": 0 # never expire
-                }   
-            }
-            print(f"Sending status \"{new_emoji} {new_text}\" to Slack")
-            try:
-                requests.post(setup.REQUEST_URL, headers=headers, data=json.dumps(data))
-            except requests.ConnectionError as e:
-                print(f"Connection error when sending status to Slack.")
-            except requests.Timeout as e:
-                print(f"Connection timed out when sending status to Slack.")
-                    
-            old_emoji = new_emoji
-            old_text = new_text
+        if response_json is not None:
+            status = get_status(response_json)
+            update_status(status[0], status[1])
 
     time.sleep(setup.REFRESH_INTERVAL)
