@@ -1,0 +1,6 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "mounts": [
+        "source=/home/karevulli/projects/super-productivity-waybar/,target=/home/vscode/super-productivity,type=bind,readonly"
+    ]
+}
