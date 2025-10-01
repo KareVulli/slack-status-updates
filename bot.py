@@ -1,3 +1,5 @@
+import signal
+import sys
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -106,6 +108,10 @@ def exit_handler():
         }
     }))
 
+def signal_handler(signal, frame):
+    sys.exit(0)
+    
+signal.signal(signal.SIGTERM, signal_handler)
 atexit.register(exit_handler)
 
 while True:
